@@ -40,26 +40,29 @@ const app = require("./app"),
   cloudinary = require("cloudinary"),
   { setDriver } = require(_0x948281(0x17b));
 
-// --- NEW ROBUST PORT LOGIC GOES HERE ---
-// Temporarily store Render's PORT if it exists before loading the .env file.
-const RENDER_PORT = process.env.PORT; 
-// ----------------------------------------
+// --- OLD PORT LOGIC REMOVED FROM HERE ---
 
 process["on"](_0x948281(0x179), (_0x292333) => {
   const _0x2a3ed7 = _0x948281;
   console[_0x2a3ed7(0x16e)](_0x2a3ed7(0x183) + _0x292333["stack"]),
     console[_0x2a3ed7(0x16e)](_0x2a3ed7(0x180)),
     process[_0x2a3ed7(0x17f)](0x1);
-}),
-// Loads the .env file, which may set PORT=4000
-  dotenv[_0x948281(0x16a)]({ path: _0x948281(0x171) }),
+});
 
-// --- NEW ROBUST PORT LOGIC GOES HERE ---
-// If Render's port was set (meaning we are on Render), restore it.
+// --- NEW PORT ROBUST LOGIC MOVED TO HERE (before dotenv call) ---
+// 1. Temporarily store Render's PORT if it exists before loading the .env file.
+const RENDER_PORT = process.env.PORT; 
+// -------------------------------------------------------------------
+
+
+// Loads the .env file, which may set PORT=4000
+  dotenv[_0x948281(0x16a)]({ path: _0x948281(0x171) });
+
+// 2. If Render's port was set (meaning we are on Render), restore it.
 if (RENDER_PORT) {
     process.env.PORT = RENDER_PORT;
 }
-// ----------------------------------------
+// -------------------------------------------------------------------
 
   connectDatabase(),
   cloudinary[_0x948281(0x16a)]({
