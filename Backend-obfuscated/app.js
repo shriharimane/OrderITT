@@ -9,14 +9,32 @@ const errorMiddleware = require("./middlewares/errors");
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+/* ===============================
+   CORS CONFIGURATION
+================================ */
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true,
+  })
+);
+
+/* ===============================
+   BODY PARSER LIMITS
+================================ */
+app.use(express.json({ limit: "30kb" }));
+app.use(express.urlencoded({ extended: true, limit: "30kb" }));
+
+/* ===============================
+   OTHER MIDDLEWARES
+================================ */
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(fileUpload());
 
-// Health check (important for Render)
+/* ===============================
+   HEALTH CHECK ROUTE (Render)
+================================ */
 app.get("/", (req, res) => {
   res.status(200).json({
     status: "success",
@@ -24,7 +42,9 @@ app.get("/", (req, res) => {
   });
 });
 
-// Import routes
+/* ===============================
+   IMPORT ROUTES
+================================ */
 const foodRouter = require("./routes/foodItem");
 const restaurantRouter = require("./routes/restaurant");
 const menuRouter = require("./routes/menu");
@@ -34,7 +54,9 @@ const authRouter = require("./routes/auth");
 const paymentRouter = require("./routes/payment");
 const cartRouter = require("./routes/cart");
 
-// Routes
+/* ===============================
+   API ROUTES
+================================ */
 app.use("/api/v1/eats", foodRouter);
 app.use("/api/v1/eats/menus", menuRouter);
 app.use("/api/v1/eats/stores", restaurantRouter);
@@ -44,11 +66,15 @@ app.use("/api/v1", paymentRouter);
 app.use("/api/v1/coupon", couponRouter);
 app.use("/api/v1/eats/cart", cartRouter);
 
-// View engine (if used)
+/* ===============================
+   VIEW ENGINE
+================================ */
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
-// 404 handler
+/* ===============================
+   404 HANDLER
+================================ */
 app.all("*", (req, res) => {
   res.status(404).json({
     status: "fail",
@@ -56,7 +82,9 @@ app.all("*", (req, res) => {
   });
 });
 
-// Error middleware
+/* ===============================
+   ERROR HANDLER
+================================ */
 app.use(errorMiddleware);
 
 module.exports = app;
